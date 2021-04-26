@@ -3,13 +3,11 @@ module go_blog_app
 go 1.16
 
 require (
-	bitbucket.org/liamstask/goose v0.0.0-20150115234039-8488cc47d90c // indirect
 	github.com/flosch/pongo2 v0.0.0-20200913210552-0d938eb266f3
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/jmoiron/sqlx v1.3.3
-	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/labstack/echo/v4 v4.2.2
 	github.com/lib/pq v1.10.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.7 // indirect
-	github.com/ziutek/mymysql v1.5.4 // indirect
+	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 )
