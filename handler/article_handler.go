@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"go_blog_app/model"
 	"go_blog_app/repository"
 
 	"github.com/labstack/echo/v4"
@@ -62,4 +63,51 @@ func ArticleEdit(c echo.Context) error {
 	}
 
 	return render(c, "article/edit.html", data)
+}
+
+// ArticleCreateOutput ...
+type ArticleCreateOutput struct {
+	Article          *model.Article
+	Message          string
+	ValidationErrors []string
+}
+
+// ArticleCreate ...
+func ArticleCreate(c echo.Context) error {
+	// 送信されてくるフォームの内容を格納する構造体を宣言します。
+	var article model.Article
+
+	// レスポンスとして返却する構造体を宣言します。
+	var out ArticleCreateOutput
+
+	// フォームの内容を構造体に埋め込みます。
+	if err := c.Bind(&article); err != nil {
+		// エラーの内容をサーバーのログに出力します。
+		c.Logger().Error(err.Error())
+
+		// リクエストの解釈に失敗した場合は 400 エラーを返却します。
+		return c.JSON(http.StatusBadRequest, out)
+	}
+
+	// repository を呼び出して保存処理を実行します。
+	res, err := repository.ArticleCreate(&article)
+	if err != nil {
+		// エラーの内容をサーバーのログに出力します。
+		c.Logger().Error(err.Error())
+
+		// サーバー内の処理でエラーが発生した場合は 500 エラーを返却します。
+		return c.JSON(http.StatusInternalServerError, out)
+	}
+
+	// SQL 実行結果から作成されたレコードの ID を取得します。
+	id, _ := res.LastInsertId()
+
+	// 構造体に ID をセットします。
+	article.ID = int(id)
+
+	// レスポンスの構造体に保存した記事のデータを格納します。
+	out.Article = &article
+
+	// 処理成功時はステータスコード 200 でレスポンスを返却します。
+	return c.JSON(http.StatusOK, out)
 }

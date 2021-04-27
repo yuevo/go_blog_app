@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   const { method, url } = mode;
 
+  // CSRF トークンを取得します。
+  const csrfToken = document.getElementsByName('csrf')[0].content;
+
   // input 要素にフォーカスが合った状態で Enter が押されると form が送信されます。
   // 今回は Enter キーで form が送信されないように挙動を制御します。
   for (let elm of inputs) {
@@ -42,6 +45,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // 保存処理を実行するイベントを設定します。
+  saveBtn.addEventListener('click', event => {
+    event.preventDefault();
+
+    // フォームに入力された内容を取得します。
+    const fd = new FormData(form);
+
+    let status;
+
+    // fetch API を利用してリクエストを送信します。
+    fetch(url, {
+      method: method,
+      headers: { 'X-CSRF-Token': csrfToken },
+      body: fd
+    })
+      .then(res => {
+        status = res.status;
+        return res.json();
+      })
+      .then(body => {
+        console.log(JSON.stringify(body));
+
+        if (status === 200) {
+          // 成功時は一覧画面に遷移させます。
+          window.location.href = url;
+        }
+
+        if (body.ValidationErrors) {
+          // バリデーションエラーがある場合の処理をここに記載します。
+        }
+      })
+      .catch(err => console.error(err));
+  });
 
   // プレビューを開くイベントを設定します。
   previewOpenBtn.addEventListener('click', event => {
