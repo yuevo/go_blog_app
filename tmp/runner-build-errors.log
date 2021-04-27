@@ -1,0 +1,2 @@
+main.go:14:2: no required module provides package gopkg.in/go-playground/validator.v9; to add it:
+	go get gopkg.in/go-playground/validator.v9
