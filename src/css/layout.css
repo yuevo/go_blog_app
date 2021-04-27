@@ -29,6 +29,7 @@ a {
 .footer__menu-item {
   list-style: none;
   padding: 2px 4px;
+  cursor: pointer;
 }
 
 .footer__copy-right {
